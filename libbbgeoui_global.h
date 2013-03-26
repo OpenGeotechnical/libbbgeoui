@@ -1,0 +1,12 @@
+#ifndef LIBBBGEOUI_GLOBAL_H
+#define LIBBBGEOUI_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(LIBBBGEOUI_LIBRARY)
+#  define LIBBBGEOUISHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define LIBBBGEOUISHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // LIBBBGEOUI_GLOBAL_H
