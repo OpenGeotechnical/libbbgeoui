@@ -4,14 +4,16 @@
 #
 #-------------------------------------------------
 
-QT       += webkit sql
+QT       += webkit sql opengl
 
 TARGET = libbbgeoui
 TEMPLATE = lib
 
 LIBS += -L../libbbgeo -llibbbgeo
-
 include(../libbbgeo/libbbgeo.pri)
+
+LIBS+=-lglut32
+LIBS+=-Lc:\Glut32\
 
 DEFINES += LIBBBGEOUI_LIBRARY
 
@@ -22,9 +24,7 @@ SOURCES += libbbgeoui.cpp \
     geoprofile2dgraphicsview.cpp \
     geoprofile2dgraphicsscene.cpp \
     subsoilgraphicsscene.cpp \
-    watergraphicsscene.cpp \
-    crosssectiongraphicsscene.cpp \
-    geodesignerwidget.cpp
+    vsoilglwidget.cpp
 
 HEADERS += libbbgeoui.h\
         libbbgeoui_global.h \
@@ -34,9 +34,7 @@ HEADERS += libbbgeoui.h\
     geoprofile2dgraphicsview.h \
     geoprofile2dgraphicsscene.h \
     subsoilgraphicsscene.h \
-    watergraphicsscene.h \
-    crosssectiongraphicsscene.h \
-    geodesignerwidget.h
+    vsoilglwidget.h
 
 symbian {
     MMP_RULES += EXPORTUNFROZEN
@@ -60,5 +58,4 @@ unix:!symbian {
 OTHER_FILES += \
     libbbgeoui.pri
 
-FORMS += \
-    geodesignerwidget.ui
+FORMS +=

@@ -7,6 +7,8 @@
 #include <QMouseEvent>
 #include "cmath"
 
+#include "vsoilgraphicsscene.h"
+
 #include "latlon.h"
 
 #define MAP_HTML ""\
@@ -107,6 +109,7 @@ void q3DWebView::paintEvent(QPaintEvent *event)
     QWebView::paintEvent(event);
     QPainter painter(this);
     QPen pen(Qt::green, 3, Qt::DashDotLine, Qt::RoundCap, Qt::RoundJoin);
+    QPen penText(Qt::black, 3);
     painter.setPen(pen);
 
     //paint the location of the visible cpt's
@@ -123,12 +126,20 @@ void q3DWebView::paintEvent(QPaintEvent *event)
     //paint the location of the visible vsoils
     if(m_paintVSoilLocations){
         foreach(VSoil *vs, m_dataStore->getVisibleVSoils(m_boundary)){
-            double lat = vs->latitude();
-            double lng = vs->longitude();
-            double x = (lng - m_boundary.x()) / m_boundary.width() * width();
-            double y = (m_boundary.y() - lat) / (m_boundary.top() - m_boundary.bottom()) * height();
-
-            painter.fillRect(int(x) - 2, int(y) - 2, 4, 4, QColor(255, 0, 0, 192));
+            //check if a filter is set and if so only show the filtered results
+            if(m_vsoilSourceFilter=="All" ||  m_vsoilSourceFilter == vs->source()){
+                double lat = vs->latitude();
+                double lng = vs->longitude();
+                double x = (lng - m_boundary.x()) / m_boundary.width() * width();
+                double y = (m_boundary.y() - lat) / (m_boundary.top() - m_boundary.bottom()) * height();
+                painter.fillRect(int(x) - 2, int(y) - 2, 4, 4, QColor(255, 0, 0, 192));
+                if(m_mouseClosestToVSoilId == vs->id()){ //draw declarative text if the mouse is close to the point
+                    painter.setPen(penText);
+                    painter.drawText(int(x), int(y), QString("(%1) %2 - %3").arg(vs->id()).arg(vs->name()).arg(vs->source()));
+                    painter.setPen(pen);
+                    emit vsoilSelected(vs->id());
+                }
+            }            
         }
     }
 
@@ -169,6 +180,27 @@ void q3DWebView::mouseReleaseEvent(QMouseEvent *event)
     }
     QWebView::mouseReleaseEvent(event);
 }
+
+void q3DWebView::mouseMoveEvent(QMouseEvent *event)
+{
+    m_mouseClosestToVSoilId = -1;
+    foreach(VSoil *vs, m_dataStore->getVisibleVSoils(m_boundary)){
+        //check if a filter is set and if so only show the filtered results
+        if(m_vsoilSourceFilter=="All" ||  m_vsoilSourceFilter == vs->source()){
+            double lat = vs->latitude();
+            double lng = vs->longitude();
+            double x = (lng - m_boundary.x()) / m_boundary.width() * width();
+            double y = (m_boundary.y() - lat) / (m_boundary.top() - m_boundary.bottom()) * height();
+
+            if((x-3 < event->x()) && (event->x() < x+3) && (y-3 < event->y()) && (event->y() < y + 3)){
+                m_mouseClosestToVSoilId = vs->id();
+                break;
+            }
+        }
+    }
+    QWebView::mouseMoveEvent(event);
+}
+
 
 
 void q3DWebView::showContextMenu(QPoint p)
@@ -215,5 +247,10 @@ void q3DWebView::generate2DSoilProfile()
 {
     //set the webview to the normal mode
     setMode(WVMODE_NORMAL);
-    m_dataStore->generateGeoProfile2D(m_selection);    
+    m_dataStore->generateGeoProfile2D(m_selection);
+}
+
+void q3DWebView::setVSoilSourceFilter(QString source)
+{
+    m_vsoilSourceFilter = source;
 }

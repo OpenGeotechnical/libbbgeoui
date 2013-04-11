@@ -14,7 +14,7 @@ public:
     void setVSoil(VSoil* vs);
     void setDataStore(DataStore* ds) { m_dataStore = ds; }    
 
-    void reloadScene();    
+    void reloadScene();
 
 private:
     VSoil* m_vsoil;

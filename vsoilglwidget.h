@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include "vsoil.h"
 #include "datastore.h"
+#include <GL/glut.h>
 
 class VSoilGLWidget : public QGLWidget
 {
