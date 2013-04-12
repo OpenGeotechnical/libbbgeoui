@@ -5,6 +5,7 @@
 #include <QList>
 #include <QMenu>
 
+#include "latlon.h"
 #include "datastore.h"
 
 enum webviewMode {WVMODE_NORMAL=1, WVMODE_DRAW, WVMODE_SELECT};
@@ -53,6 +54,7 @@ private:
 signals:
     void vsoilAdded(int);
     void vsoilSelected(int);
+    void mouseLocationChanged(LatLon);
     
 public slots:
     void setMode(webviewMode mode);

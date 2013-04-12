@@ -9,8 +9,6 @@
 
 #include "vsoilgraphicsscene.h"
 
-#include "latlon.h"
-
 #define MAP_HTML ""\
 "<!DOCTYPE html>"\
 "<html>"\
@@ -184,6 +182,12 @@ void q3DWebView::mouseReleaseEvent(QMouseEvent *event)
 void q3DWebView::mouseMoveEvent(QMouseEvent *event)
 {
     m_mouseClosestToVSoilId = -1;
+
+    LatLon loc;
+    loc.setLatitude(m_boundary.top() + event->y() / double(height()) * m_boundary.height());
+    loc.setLongitude(m_boundary.left() + event->x() / double(width()) * m_boundary.width());
+    emit mouseLocationChanged(loc);
+
     foreach(VSoil *vs, m_dataStore->getVisibleVSoils(m_boundary)){
         //check if a filter is set and if so only show the filtered results
         if(m_vsoilSourceFilter=="All" ||  m_vsoilSourceFilter == vs->source()){
