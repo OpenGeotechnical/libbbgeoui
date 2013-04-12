@@ -36,7 +36,7 @@
 "        var myOptions = {"\
 "          zoom: 12,"\
 "          center: new google.maps.LatLng(52.37, 4.895),"\
-"          mapTypeId: google.maps.MapTypeId.HYBRID,"\
+"          mapTypeId: google.maps.MapTypeId.ROADMAP,"\
 "          zoomControl: true,"\
 "          zoomControlOptions: { style: google.maps.ZoomControlStyle.SMALL },"\
 "        };"\
