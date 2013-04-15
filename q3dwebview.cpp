@@ -13,7 +13,7 @@
 "<!DOCTYPE html>"\
 "<html>"\
 "  <head>"\
-"    <title>Controling Google Maps through Qt application</title>"\
+"    <title>qSubSoil</title>"\
 "    <meta name=\"viewport\""\
 "        content=\"width=device-width, initial-scale=1.0, user-scalable=no\">"\
 "    <meta charset=\"UTF-8\">"\
@@ -27,7 +27,6 @@
 "    <script type=\"text/javascript\" src=\"http://maps.googleapis.com/maps/api/js?sensor=false\"></script>"\
 "    <script type=\"text/javascript\">"\
 "      var map;"\
-" "\
 "      var myLatlng = new google.maps.LatLng(52.37, 4.895);"\
 " "\
 "      function initialize() {"\
@@ -40,6 +39,7 @@
 "        };"\
 " "\
 "        map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);"\
+" "\
 "      }   "\
 " "\
 "      google.maps.event.addDomListener(window, 'load', initialize);"\
@@ -68,6 +68,12 @@ q3DWebView::q3DWebView(QWidget *parent) : QWebView(parent)
     m_mnuOptions->addAction(m_actionAddVSoil);
 
     connect(m_actionAddVSoil, SIGNAL(triggered()), SLOT(addVSoil()));
+}
+
+void q3DWebView::setDataStore(DataStore *dataStore)
+{
+    m_dataStore = dataStore;
+    //panToBounds(); //TODO: uitwerken
 }
 
 void q3DWebView::init()
@@ -124,8 +130,7 @@ void q3DWebView::paintEvent(QPaintEvent *event)
     //paint the location of the visible vsoils
     if(m_paintVSoilLocations){
         foreach(VSoil *vs, m_dataStore->getVisibleVSoils(m_boundary)){
-            //check if a filter is set and if so only show the filtered results
-            if(m_vsoilSourceFilter=="All" ||  m_vsoilSourceFilter == vs->source()){
+            if(vs->isEnabled()){
                 double lat = vs->latitude();
                 double lng = vs->longitude();
                 double x = (lng - m_boundary.x()) / m_boundary.width() * width();
@@ -190,7 +195,7 @@ void q3DWebView::mouseMoveEvent(QMouseEvent *event)
 
     foreach(VSoil *vs, m_dataStore->getVisibleVSoils(m_boundary)){
         //check if a filter is set and if so only show the filtered results
-        if(m_vsoilSourceFilter=="All" ||  m_vsoilSourceFilter == vs->source()){
+        if(vs->isEnabled()){
             double lat = vs->latitude();
             double lng = vs->longitude();
             double x = (lng - m_boundary.x()) / m_boundary.width() * width();
@@ -254,7 +259,15 @@ void q3DWebView::generate2DSoilProfile()
     m_dataStore->generateGeoProfile2D(m_selection);
 }
 
-void q3DWebView::setVSoilSourceFilter(QString source)
+void q3DWebView::panToBounds()
 {
-    m_vsoilSourceFilter = source;
+    qDebug() << "TODO: implement void q3DWebView::panToBounds()";
+    //TODO: extends bepalen en dan de pan functie werkend krijgen.. dit werkt nog niet!
+    double left = 52.2;
+    double right = 52.245;
+    double top = 4.8;
+    double bottom = 4.9;
+
+    QVariant result = page()->mainFrame()->evaluateJavaScript("map.panTo(new google.maps.LatLng(30, 5));");
+
 }

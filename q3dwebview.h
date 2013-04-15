@@ -16,7 +16,7 @@ class q3DWebView : public QWebView
 public:
     explicit q3DWebView(QWidget *parent = 0);
 
-    void setDataStore(DataStore *dataStore) {m_dataStore = dataStore;}
+    void setDataStore(DataStore *dataStore);
     void init();
     void setDisplayCPTLocations(bool value) { m_paintCPTLocations = value; repaint(); }
     void setDisplayVSoilLocations(bool value) { m_paintVSoilLocations = value; repaint();}
@@ -42,7 +42,6 @@ private:
     QAction *m_actionAddVSoil;
     int m_mouseClosestToVSoilId;
 
-
     bool m_paintCPTLocations; //if true, the cpt locations are plotted on the map
     bool m_paintVSoilLocations; //if true, the cpt locations are plotted on the map
 
@@ -60,7 +59,7 @@ public slots:
     void setMode(webviewMode mode);
     void removeSelection();
     void generate2DSoilProfile();
-    void setVSoilSourceFilter(QString source); //displays only vsoil with a source listed in sources
+    void panToBounds(); //zooms on the extends of the data in the datastore
 
 private slots:
     void updateBoundaries();
